@@ -1,0 +1,34 @@
+ssh fmazel@zoology.ubc.ca
+
+cd Documents/CoPhylogeny/Metadata/
+
+
+####################################################
+#  Download Youngblut data, BioProject:PRJEB29403  #
+####################################################
+
+# Get the accession file from ENA website: Documents/CoPhylogeny/Metadata/PRJEB29403.txt
+
+# Extract ftps form accession file
+awk '{ print $13 }' PRJEB29403.txt  > ftp_PRJEB29403.txt 
+
+# Separate ftps of forward and reverse reads 
+awk '{split($1,a,";"); print a[1]}'  ftp_PRJEB29403.txt > ftp_PRJEB29403_1.txt
+awk '{split($1,a,";"); print a[2]}'  ftp_PRJEB29403.txt > ftp_PRJEB29403_2.txt
+
+# Make one single list combinign forward and reverse reads
+cat ftp_PRJEB29403_2.txt ftp_PRJEB29403_1.txt > full_list_ftp_PRJEB29403.txt
+
+
+# Download data 
+cat Documents/CoPhylogeny/Metadata/full_list_ftp_PRJEB29403.txt | while read i
+do
+echo $i
+wget -P Documents/CoPhylogeny/RawData $i
+done
+
+
+# Unzip data
+gunzip -d -r Documents/CoPhylogeny/RawData
+
+
